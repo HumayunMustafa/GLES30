@@ -61,10 +61,10 @@ class MainActivity : AppCompatActivity() {
      */
     external fun stringFromJNI(): String
 
-    companion object {
-        // Used to load the 'videogles' library on application startup.
-        init {
-            System.loadLibrary("videogles")
-        }
-    }
+//    companion object {
+//        // Used to load the 'videogles' library on application startup.
+//        init {
+//            System.loadLibrary("videogles")
+//        }
+//    }
 }
