@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- ImageView that occupies 80% of the screen height -->
+    <ImageView
+        android:id="@+id/sampleImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/toolsFragmentContainer"
+        app:layout_constraintHeight_percent="0.8"
+        android:contentDescription="@string/selected_image" />
+
+    <!-- Tools Fragment bar that occupies 20% of the screen height -->
+
+        <LinearLayout
+            android:id="@+id/toolsFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.1"
+            app:layout_constraintTop_toBottomOf="@id/sampleImageView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+        <ImageButton
+            android:id="@+id/galleryButton"
+            android:paddingBottom="0dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/open_gallery"
+            android:scaleType="fitCenter"
+            android:src="@drawable/gallerypicker_scaled" />
+        </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
