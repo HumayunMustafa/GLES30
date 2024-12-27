@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Background with rounded corners -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#000000"
+        android:strokeWidth="1"
+        android:pathData="M5,5h90a5,5 0 0 1 5,5v80a5,5 0 0 1 -5,5h-90a5,5 0 0 1 -5,-5v-80a5,5 0 0 1 5,-5z"/>
+
+    <!-- "FX" Text as a vector path -->
+    <!-- Note: Custom text like "FX" needs to be converted into vector paths manually -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M 20,65 l 15,-30 h 5 l -10,20 h 8 l 10,-20 h 5 l -10,30 h -5 l 10,-20 h -8 l -10,20 h -5"/>
+</vector>

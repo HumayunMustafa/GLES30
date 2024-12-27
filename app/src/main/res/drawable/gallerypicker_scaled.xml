@@ -1,4 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/gallerypicker" />
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Background rectangle with rounded corners -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M0,0 h100 v100 h-100 z"
+        android:strokeWidth="0"
+        android:strokeColor="@android:color/transparent" />
+
+    <!-- Sun (as a circular path) -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M70,45 a15,15 0 1,1 0.1,0 z" />
+
+    <!-- Mountain 1 (Black) -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M0,100 L30,50 L90,100 z"/>
+
+    <!-- Mountain 2 (Smaller, for depth) -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M30,100 L60,60 L100,100 z"/>
+
+</vector>
