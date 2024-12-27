@@ -4,12 +4,12 @@
     android:viewportWidth="100"
     android:viewportHeight="100">
 
-    <!-- Background rectangle with rounded corners -->
+    <!-- Background rectangle with rounded corners and border -->
     <path
         android:fillColor="#000000"
-        android:pathData="M0,0 h100 v100 h-100 z"
-        android:strokeWidth="0"
-        android:strokeColor="@android:color/transparent" />
+        android:pathData="M5,0 h90 a5,5 0 0 1 5,5 v90 a5,5 0 0 1 -5,5 h-90 a5,5 0 0 1 -5,-5 v-90 a5,5 0 0 1 5,-5 z"
+        android:strokeWidth="5"
+    android:strokeColor="#ffffff" /> <!-- Set the border color -->
 
     <!-- Sun (as a circular path) -->
     <path
