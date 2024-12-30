@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                isSurfaceReady = false
+//                isSurfaceReady = false
             }
         })
     }
