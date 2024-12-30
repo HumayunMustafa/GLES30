@@ -16,9 +16,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-//import androidx.compose.ui.graphics.Color
 import com.example.videogles.databinding.ActivityMainBinding
-import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +24,8 @@ class MainActivity : AppCompatActivity() {
     private val surfaceView: SurfaceView
         get() = binding.sampleImageView
 
-    val surfaeBitmap : Bitmap? =  null
+    private var isSurfaceReady = false
+    private var pendingImageUri: Uri? = null  // Store the pending image URI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,18 +40,20 @@ class MainActivity : AppCompatActivity() {
         // Initialize SurfaceView
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                Log.d("SurfaceView", "Surface created - Valid: ${holder.surface.isValid}")
-                Log.d("SurfaceView", "Surface size: ${surfaceView.width}x${surfaceView.height}")
-                surfaceView.visibility = View.VISIBLE
-                surfaeBitmap?.let { bitmap: Bitmap ->  drawBitmapOnSurface(bitmap)}
+                JNIBridge.initScreenNative(holder.surface)
+//                isSurfaceReady = true
+//                // If there's a pending image URI, display it now
+//                pendingImageUri?.let {
+//                    displayImageOnSurfaceView(it)
+//                    pendingImageUri = null
+//                }
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-                Log.d("SurfaceView", "Surface changed - Size: ${width}x${height}")
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                Log.d("SurfaceView", "Surface destroyed")
+                isSurfaceReady = false
             }
         })
     }
@@ -70,19 +71,19 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val selectedImageUri: Uri? = result.data?.data
                 if (selectedImageUri != null) {
+                    // Call displayImageOnSurfaceView with the selected image URI
                     displayImageOnSurfaceView(selectedImageUri)
                 }
             }
         }
 
     private fun displayImageOnSurfaceView(imageUri: Uri) {
-//        val inputStream: InputStream? = contentResolver.openInputStream(imageUri)
-//        val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
-//        val canvas = surfaceView.holder.lockCanvas()
-//        if (canvas != null) {
-//            canvas.drawBitmap(bitmap, 0f, 0f, null)
-//            surfaceView.holder.unlockCanvasAndPost(canvas)
-//        }
+        if (!isSurfaceReady) {
+            Log.e("SurfaceView", "Surface is not ready, storing the image URI for later.")
+            pendingImageUri = imageUri  // Store the URI for later
+            return
+        }
+
         try {
             contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
@@ -98,13 +99,17 @@ class MainActivity : AppCompatActivity() {
                     val surfaceHeight = surfaceView.height.toFloat()
 
                     // Calculate scaling factors
-                    val scaleX = surfaceWidth / bitmap.width
-                    val scaleY = surfaceHeight / bitmap.height
-                    val scale = maxOf(scaleX, scaleY)  // Use max for "centerCrop" effect
+                    val scaleX = surfaceWidth / bitmap.width.toFloat()
+                    val scaleY = surfaceHeight / bitmap.height.toFloat()
+                    val scale = minOf(scaleX, scaleY)  // Use min for "fitCenter" effect
+
+                    // Calculate new dimensions of the bitmap
+                    val scaledWidth = bitmap.width * scale
+                    val scaledHeight = bitmap.height * scale
 
                     // Calculate translation to center the image
-                    val left = (surfaceWidth - (bitmap.width * scale)) / 2f
-                    val top = (surfaceHeight - (bitmap.height * scale)) / 2f
+                    val left = (surfaceWidth - scaledWidth) / 2f
+                    val top = (surfaceHeight - scaledHeight) / 2f
 
                     val matrix = Matrix().apply {
                         postScale(scale, scale)
@@ -115,59 +120,11 @@ class MainActivity : AppCompatActivity() {
                     surfaceView.holder.unlockCanvasAndPost(it)
                 }
 
+                // Recycle the bitmap after drawing
                 bitmap.recycle()
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun drawBitmapOnSurface(bitmap: Bitmap) {
-        if (!surfaceView.holder.surface.isValid) {
-            Log.e("SurfaceView", "Surface is not valid")
-            return
-        }
-
-        try {
-            val canvas = surfaceView.holder.lockCanvas()
-            if (canvas == null) {
-                Log.e("SurfaceView", "Canvas is null")
-                return
-            }
-
-            try {
-                // Clear the canvas
-                canvas.drawColor(Color.BLACK)
-
-                val surfaceWidth = surfaceView.width.toFloat()
-                val surfaceHeight = surfaceView.height.toFloat()
-
-                Log.d("SurfaceView", "Surface dimensions: $surfaceWidth x $surfaceHeight")
-                Log.d("SurfaceView", "Bitmap dimensions: ${bitmap.width} x ${bitmap.height}")
-
-                // Calculate scaling to fill the surface while maintaining aspect ratio
-                val scaleX = surfaceWidth / bitmap.width
-                val scaleY = surfaceHeight / bitmap.height
-                val scale = maxOf(scaleX, scaleY)
-
-                val scaledWidth = bitmap.width * scale
-                val scaledHeight = bitmap.height * scale
-                val left = (surfaceWidth - scaledWidth) / 2f
-                val top = (surfaceHeight - scaledHeight) / 2f
-
-                val matrix = Matrix().apply {
-                    postScale(scale, scale)
-                    postTranslate(left, top)
-                }
-
-                Log.d("SurfaceView", "Drawing with scale: $scale, left: $left, top: $top")
-                canvas.drawBitmap(bitmap, matrix, null)
-            } finally {
-                surfaceView.holder.unlockCanvasAndPost(canvas)
-                Log.d("SurfaceView", "Canvas unlocked and posted")
-            }
-        } catch (e: Exception) {
-            Log.e("SurfaceView", "Error drawing bitmap", e)
         }
     }
 
