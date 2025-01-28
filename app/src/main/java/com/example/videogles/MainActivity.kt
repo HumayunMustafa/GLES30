@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private var isSurfaceReady = false
     private var pendingImageUri: Uri? = null  // Store the pending image URI
-
+    private var currentBitmap: Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,20 +40,26 @@ class MainActivity : AppCompatActivity() {
         // Initialize SurfaceView
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-                JNIBridge.initScreenNative(holder.surface)
-//                isSurfaceReady = true
-//                // If there's a pending image URI, display it now
+//                JNIBridge.initScreenNative(holder.surface)
+                isSurfaceReady = true
+                Log.d("SurfaceHolder", "surfaceCreated")
+                // If there's a pending image URI, display it now
+                pendingImageUri?.let {
+                    displayImageOnSurfaceView(it)
+                    pendingImageUri = null
+                }
+            }
+
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                Log.d("SurfaceHolder", "surfaceChanged")
 //                pendingImageUri?.let {
 //                    displayImageOnSurfaceView(it)
 //                    pendingImageUri = null
 //                }
             }
 
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-            }
-
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-//                isSurfaceReady = false
+                isSurfaceReady = false
             }
         })
     }
