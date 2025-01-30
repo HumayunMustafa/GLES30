@@ -12,14 +12,15 @@
 /// Cases for EGL logging. Currently only know errors are added.
 /// Will update the function later accordingly.
 
-const char* eglErrorString(EGLint error) {
+const char* EglErrorString(EGLint error) {
     switch (error) {
         case EGL_NOT_INITIALIZED: return "EGL is not initialized! ";
-        case EGL_BAD_ACCESS: return "Cannot access EGL (Bad Access)";
+        case EGL_BAD_ACCESS: return "Cannot access EGL (Bad Access).";
 //        case EGL_NO_DISPLAY: return "Display not set for EGL"; TODO: Find out a viable replacement for this
-        case EGL_BAD_CONFIG: return "EGL not configured correctly";
-        case EGL_BAD_CONTEXT: return "EGL context is not set (Bad Context)";
-        default: return "EGL error not specified in this app";
+        case EGL_BAD_CONFIG: return "EGL not configured correctly.";
+        case EGL_BAD_CONTEXT: return "EGL context is not set (Bad Context).";
+        case EGL_BAD_PARAMETER: return "Parameter passed is not correct.";
+        default: return "EGL error not specified in this app.";
 
     }
 }
@@ -30,11 +31,11 @@ const char* eglErrorString(EGLint error) {
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, __FILENAME__, __VA_ARGS__)
 
 #define CHECK_RET_EGL(func) \
-    do {                \
+    do {                    \
+        EGLint egl_error = eglGetError();    \
         if(!(func)) {   \
-            EGLint error = eglGetError(); \
             LOGE("EGL function %s failed with error code: 0x%x (%s)", \
-                #func, error, eglErrorString(error));                 \
+                #func, egl_error, EglErrorString(egl_error));     \
         }               \
     } while(0);
 
@@ -45,5 +46,22 @@ const char* eglErrorString(EGLint error) {
         }               \
     } while(0);
 
+/// This function to print  the EGL configs. Might be necessary in some case in future
+void LogEglConfigs(EGLDisplay display) {
+    EGLint numConfigs;
+    EGLConfig configs[4];
+
+    CHECK_RET_EGL(eglGetConfigs(display, configs, 4, &numConfigs));
+    LOGD("Number of configs: %d", numConfigs);
+    for(int i = 0; i < numConfigs; i++) {
+        EGLint redSize, greenSize, blueSize, alphaSize, depthSize, stencilSize;
+        eglGetConfigAttrib(display, configs[i], EGL_RED_SIZE, &redSize);
+        eglGetConfigAttrib(display, configs[i], EGL_GREEN_SIZE, &greenSize);
+        eglGetConfigAttrib(display, configs[i], EGL_BLUE_SIZE, &blueSize);
+        eglGetConfigAttrib(display, configs[i], EGL_ALPHA_SIZE, &alphaSize);
+        eglGetConfigAttrib(display, configs[i], EGL_DEPTH_SIZE, &depthSize);
+        eglGetConfigAttrib(display, configs[i], EGL_STENCIL_SIZE, &stencilSize);
+    }
+}
 
 #endif //VIDEOGLES_LOGGING_H
