@@ -13,4 +13,5 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_videogles_JNIBridge_initScreenNative(JNIEnv *env, jclass clazz, jobject surface) {
     // TODO: implement initScreenNative()
+
 }
