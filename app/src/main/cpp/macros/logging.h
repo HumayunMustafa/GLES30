@@ -61,6 +61,8 @@ void LogEglConfigs(EGLDisplay display) {
         eglGetConfigAttrib(display, configs[i], EGL_ALPHA_SIZE, &alphaSize);
         eglGetConfigAttrib(display, configs[i], EGL_DEPTH_SIZE, &depthSize);
         eglGetConfigAttrib(display, configs[i], EGL_STENCIL_SIZE, &stencilSize);
+        LOGD("Config %d: R:%d G:%d B:%d A:%d Depth:%d Stencil:%d",
+             i, redSize, greenSize, blueSize, alphaSize, depthSize, stencilSize);
     }
 }
 
