@@ -6,6 +6,7 @@
 #define VIDEOGLES_LOGGING_H
 #include "android/log.h"
 #include "string.h"
+#include <stdexcept>
 #include <EGL/egl.h>
 
 

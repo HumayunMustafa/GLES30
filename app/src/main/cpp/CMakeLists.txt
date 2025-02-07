@@ -30,6 +30,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         native-lib.cpp
         framework/core/EglManager.cpp
         framework/engine/Engine.cpp
+        framework/core/Renderer/Renderer.cpp
 )
 
 # Specifies libraries CMake should link to your target library. You
