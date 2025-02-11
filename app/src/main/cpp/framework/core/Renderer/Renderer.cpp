@@ -12,8 +12,8 @@ EGLRenderer::EGLRenderer() {
     EGLint minor_version;
     EGLConfig config;
     EGLint num_configs;
-    EGLint attrib;
     EGLint format;
+
     EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if(display == EGL_NO_DISPLAY) {
         throw std::runtime_error("No Native Windowing System Detected");
@@ -33,6 +33,7 @@ EGLRenderer::EGLRenderer() {
     };
     CHECK_RET_EGL(eglChooseConfig(display, config_attribs, &config, 1, &num_configs));
     CHECK_RET_EGL(eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format));
+
 
 }
 

@@ -1,5 +1,12 @@
 #include <jni.h>
 #include <string>
+#include "framework/engine/Engine.h"
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
+
+
+static ANativeWindow *native_window_ptr = 0;
+static std::unique_ptr<Engine> engine = nullptr;
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_videogles_MainActivity_stringFromJNI(
@@ -12,7 +19,10 @@ Java_com_example_videogles_MainActivity_stringFromJNI(
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_videogles_JNIBridge_initScreenNative(JNIEnv *env, jclass clazz, jobject surface) {
-    // TODO: implement initScreenNative()
+    if(surface != 0) {
+        native_window_ptr = ANativeWindow_fromSurface(env, surface);
+        engine->SetWindow(native_window_ptr);
+    }
 
 
 }
