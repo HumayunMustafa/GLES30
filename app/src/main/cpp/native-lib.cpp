@@ -6,7 +6,7 @@
 
 
 static ANativeWindow *native_window_ptr = 0;
-static std::unique_ptr<Engine> engine = nullptr;
+static std::unique_ptr<Engine> engine(new Engine());
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_videogles_MainActivity_stringFromJNI(

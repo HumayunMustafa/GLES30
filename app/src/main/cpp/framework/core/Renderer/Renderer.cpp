@@ -7,34 +7,45 @@
 
 namespace nativecpp {
 
-EGLRenderer::EGLRenderer() {
-    EGLint major_version;
-    EGLint minor_version;
-    EGLConfig config;
-    EGLint num_configs;
-    EGLint format;
-
-    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if(display == EGL_NO_DISPLAY) {
-        throw std::runtime_error("No Native Windowing System Detected");
+    void EGLRenderer::Initialize() {
+        EGLRenderer();
     }
-    CHECK_RET_EGL(eglInitialize(display, &major_version, &minor_version));
-    LOGD("EGL version major: %d , minor: %d", major_version, minor_version);
-    const EGLint config_attribs[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
-            EGL_RED_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_BLUE_SIZE, 8,
-            EGL_ALPHA_SIZE, 8,
-            EGL_DEPTH_SIZE, 16,
-            EGL_STENCIL_SIZE, 8,
-            EGL_NONE
-    };
-    CHECK_RET_EGL(eglChooseConfig(display, config_attribs, &config, 1, &num_configs));
-    CHECK_RET_EGL(eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format));
 
+    EGLRenderer::EGLRenderer() {
+        EGLint major_version;
+        EGLint minor_version;
+        EGLint num_configs;
+        EGLint format;
 
-}
+        display_ = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        if(display_ == EGL_NO_DISPLAY) {
+            throw std::runtime_error("No Native Windowing System Detected");
+        }
+        CHECK_RET_EGL(eglInitialize(display_, &major_version, &minor_version));
+        LOGD("EGL version major: %d , minor: %d", major_version, minor_version);
+        CHECK_RET_EGL(eglChooseConfig(display_, attrib_list_, &config_, 1, &num_configs));
+        CHECK_RET_EGL(eglGetConfigAttrib(display_, config_, EGL_NATIVE_VISUAL_ID, &format));
+    }
+
+    void EGLRenderer::SetWindow(ANativeWindow* window) {
+        window_ = window;
+        surface_ = eglCreateWindowSurface(display_, config_, window_, attrib_list_);
+        if(surface_ == EGL_NO_SURFACE) {
+            switch (eglGetError()) {
+                case EGL_BAD_MATCH:
+                    LOGE("EGL_BAD_MATCH error");
+                    break;
+                case EGL_BAD_CONFIG:
+                    LOGE("EGL_BAD_CONFIG error");
+                    break;
+                case EGL_BAD_NATIVE_WINDOW:
+                    LOGE("EGL_BAD_NATIVE_WINDOW error");
+                    break;
+                case EGL_BAD_ALLOC:
+                    LOGE("EGL_BAD_ALLOC error ");
+                    break;
+            }
+        }
+    }
 
 } // namespace
