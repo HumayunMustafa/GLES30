@@ -36,7 +36,9 @@ namespace nativecpp {
             static EGLRenderer instance;
             return instance;
         }
-        void SetWindow(ANativeWindow* window);
+        void SetWindowSurface(ANativeWindow* window);
+        void CreateContext();
+        bool MakeContextCurrent();
         EGLRenderer();
         ~EGLRenderer() override {}
         void Initialize();
@@ -45,6 +47,7 @@ namespace nativecpp {
         EGLDisplay display_;
         EGLConfig config_;
         EGLSurface surface_;
+        EGLContext context_;
     };
 
 } // namespace

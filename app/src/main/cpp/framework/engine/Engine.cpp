@@ -8,5 +8,5 @@ Engine::Engine() {
 }
 
 void Engine::SetWindow(ANativeWindow *native_window) {
-    egl_renderer_.SetWindow(native_window);
+    egl_renderer_.SetWindowSurface(native_window);
 }

@@ -10,7 +10,7 @@
 #include <EGL/egl.h>
 
 
-/// Cases for EGL logging. Currently only know errors are added.
+/// Cases for EGL logging. Currently only known errors are added.
 /// Will update the function later accordingly.
 
 const char* EglErrorString(EGLint error) {

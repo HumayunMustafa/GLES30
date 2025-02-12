@@ -21,13 +21,14 @@ namespace nativecpp {
         if(display_ == EGL_NO_DISPLAY) {
             throw std::runtime_error("No Native Windowing System Detected");
         }
+
         CHECK_RET_EGL(eglInitialize(display_, &major_version, &minor_version));
         LOGD("EGL version major: %d , minor: %d", major_version, minor_version);
         CHECK_RET_EGL(eglChooseConfig(display_, attrib_list_, &config_, 1, &num_configs));
         CHECK_RET_EGL(eglGetConfigAttrib(display_, config_, EGL_NATIVE_VISUAL_ID, &format));
     }
 
-    void EGLRenderer::SetWindow(ANativeWindow* window) {
+    void EGLRenderer::SetWindowSurface(ANativeWindow* window) {
         window_ = window;
         surface_ = eglCreateWindowSurface(display_, config_, window_, attrib_list_);
         if(surface_ == EGL_NO_SURFACE) {
@@ -46,6 +47,24 @@ namespace nativecpp {
                     break;
             }
         }
+    }
+
+    void EGLRenderer::CreateContext() {
+        const EGLint attrib_list[] = {
+                EGL_CONTEXT_CLIENT_VERSION, 3,
+                EGL_NONE
+        };
+        context_ = eglCreateContext(display_, config_, EGL_NO_CONTEXT, attrib_list);
+        if(context_ == EGL_NO_CONTEXT) {
+            auto error = eglGetError();
+            if(error == EGL_BAD_CONFIG) {
+                throw std::runtime_error("EGL_BAD_CONFIG error");
+            }
+        }
+    }
+
+    bool EGLRenderer::MakeContextCurrent() {
+        return eglMakeCurrent(display_, surface_, surface_, context_);
     }
 
 } // namespace
