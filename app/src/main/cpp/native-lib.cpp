@@ -3,7 +3,7 @@
 #include "framework/engine/Engine.h"
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
-
+#include <android_native_app_glue.h>
 
 static ANativeWindow *native_window_ptr = 0;
 static std::unique_ptr<Engine> engine(new Engine());

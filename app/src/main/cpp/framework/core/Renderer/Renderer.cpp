@@ -44,4 +44,7 @@ namespace nativecpp {
         return EGL_TRUE;
     }
 
+    void EGLRenderer::DrawFrame() {
+    }
+
 } // namespace

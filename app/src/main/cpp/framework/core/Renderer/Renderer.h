@@ -25,6 +25,7 @@ namespace nativecpp {
             return instance;
         }
         bool InitializeWindow(ANativeWindow* window);
+        void DrawFrame();
         ~EGLRenderer() override {}
         void Initialize();
     private:

@@ -31,14 +31,20 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         framework/core/EglManager.cpp
         framework/engine/Engine.cpp
         framework/core/Renderer/Renderer.cpp
-        framework/core/bindings/android_native_app_glue.c
 )
+
+#add_library(android_native_app_glue STATIC
+#        /Users/msd/Library/Android/sdk/ndk/25.1.8937393/sources/android/native_app_glue/android_native_app_glue.c)
+# Include headers
+include_directories(/Users/msd/Library/Android/sdk/ndk/25.1.8937393/sources/android/native_app_glue)
+
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
 target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
+#        android_native_app_glue
         android
         EGL
         log)

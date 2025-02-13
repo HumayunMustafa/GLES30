@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    ndkVersion = "25.1.8937393"
     namespace = "com.example.videogles"
     compileSdk = 35
 

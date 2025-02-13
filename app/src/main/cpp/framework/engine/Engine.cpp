@@ -13,3 +13,7 @@ void Engine::InitializeWindow(ANativeWindow *native_window) {
         throw std::runtime_error("window not initialized...");
     }
 }
+
+void Engine::DrawFrame() {
+
+}
