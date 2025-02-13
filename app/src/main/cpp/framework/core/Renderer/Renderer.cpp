@@ -7,64 +7,41 @@
 
 namespace nativecpp {
 
-    void EGLRenderer::Initialize() {
-        EGLRenderer();
-    }
-
-    EGLRenderer::EGLRenderer() {
-        EGLint major_version;
-        EGLint minor_version;
-        EGLint num_configs;
-        EGLint format;
-
-        display_ = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        if(display_ == EGL_NO_DISPLAY) {
-            throw std::runtime_error("No Native Windowing System Detected");
-        }
-
-        CHECK_RET_EGL(eglInitialize(display_, &major_version, &minor_version));
-        LOGD("EGL version major: %d , minor: %d", major_version, minor_version);
-        CHECK_RET_EGL(eglChooseConfig(display_, attrib_list_, &config_, 1, &num_configs));
-        CHECK_RET_EGL(eglGetConfigAttrib(display_, config_, EGL_NATIVE_VISUAL_ID, &format));
-    }
-
-    void EGLRenderer::SetWindowSurface(ANativeWindow* window) {
-        window_ = window;
-        surface_ = eglCreateWindowSurface(display_, config_, window_, attrib_list_);
-        if(surface_ == EGL_NO_SURFACE) {
-            switch (eglGetError()) {
-                case EGL_BAD_MATCH:
-                    LOGE("EGL_BAD_MATCH error");
-                    break;
-                case EGL_BAD_CONFIG:
-                    LOGE("EGL_BAD_CONFIG error");
-                    break;
-                case EGL_BAD_NATIVE_WINDOW:
-                    LOGE("EGL_BAD_NATIVE_WINDOW error");
-                    break;
-                case EGL_BAD_ALLOC:
-                    LOGE("EGL_BAD_ALLOC error ");
-                    break;
-            }
-        }
-    }
-
-    void EGLRenderer::CreateContext() {
-        const EGLint attrib_list[] = {
+    /// The below function is written using reference from book
+    /// OpenGL ES 3.0: Programming Guide
+    bool EGLRenderer::InitializeWindow(ANativeWindow *window) {
+        EGLNativeWindowType n_window = window;
+        const EGLint config_attrib[] = {
+                EGL_RENDERABLE_TYPE, EGL_WINDOW_BIT,
+                EGL_RED_SIZE, 8,
+                EGL_GREEN_SIZE, 8,
+                EGL_BLUE_SIZE, 8,
+                EGL_DEPTH_SIZE, 24,
+                EGL_NONE
+        };
+        const EGLint context_attrib[] = {
                 EGL_CONTEXT_CLIENT_VERSION, 3,
                 EGL_NONE
         };
-        context_ = eglCreateContext(display_, config_, EGL_NO_CONTEXT, attrib_list);
-        if(context_ == EGL_NO_CONTEXT) {
-            auto error = eglGetError();
-            if(error == EGL_BAD_CONFIG) {
-                throw std::runtime_error("EGL_BAD_CONFIG error");
-            }
+        EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        if(display == EGL_NO_DISPLAY) {
+            return EGL_FALSE;
         }
-    }
-
-    bool EGLRenderer::MakeContextCurrent() {
-        return eglMakeCurrent(display_, surface_, surface_, context_);
+        EGLint major, minor;
+        CHECK_RET_EGL(eglInitialize(display, &major, &minor));
+        EGLConfig config;
+        EGLint  num_configs;
+        CHECK_RET_EGL(eglChooseConfig(display,config_attrib,&config, 1, &num_configs));
+        EGLSurface surface = eglCreateWindowSurface(display, config, n_window, NULL);
+        if(surface == EGL_NO_SURFACE) {
+            return EGL_FALSE;
+        }
+        EGLContext context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attrib);
+        if(context == EGL_NO_CONTEXT) {
+            return EGL_FALSE;
+        }
+        CHECK_RET_EGL(eglMakeCurrent(display, window, window, context));
+        return EGL_TRUE;
     }
 
 } // namespace

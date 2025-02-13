@@ -31,6 +31,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         framework/core/EglManager.cpp
         framework/engine/Engine.cpp
         framework/core/Renderer/Renderer.cpp
+        framework/core/bindings/android_native_app_glue.c
 )
 
 # Specifies libraries CMake should link to your target library. You

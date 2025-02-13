@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL
 Java_com_example_videogles_JNIBridge_initScreenNative(JNIEnv *env, jclass clazz, jobject surface) {
     if(surface != 0) {
         native_window_ptr = ANativeWindow_fromSurface(env, surface);
-        engine->SetWindow(native_window_ptr);
+        engine->InitializeWindow(native_window_ptr);
     }
 
 

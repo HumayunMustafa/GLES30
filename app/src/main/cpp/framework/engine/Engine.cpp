@@ -4,9 +4,12 @@
 #include "Engine.h"
 
 Engine::Engine() {
-    egl_renderer_.GetInstance().Initialize();
+
 }
 
-void Engine::SetWindow(ANativeWindow *native_window) {
-    egl_renderer_.SetWindowSurface(native_window);
+void Engine::InitializeWindow(ANativeWindow *native_window) {
+    bool status = egl_renderer_.InitializeWindow(native_window);
+    if(status == false) {
+        throw std::runtime_error("window not initialized...");
+    }
 }

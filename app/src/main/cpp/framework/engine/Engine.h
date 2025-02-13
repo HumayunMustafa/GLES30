@@ -7,11 +7,13 @@
 
 #include <android/native_window.h>
 #include "../core/Renderer/Renderer.h"
+#include "../../macros/logging.h"
+#include <android_native_app_glue.h>
 
 class Engine {
 public:
     Engine();
-    void SetWindow(ANativeWindow* native_window);
+    void InitializeWindow(ANativeWindow* native_window);
 private:
     nativecpp::EGLRenderer egl_renderer_;
 };

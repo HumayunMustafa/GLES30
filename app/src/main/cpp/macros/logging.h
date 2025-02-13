@@ -44,6 +44,7 @@ const char* EglErrorString(EGLint error) {
     do {                \
         if(!(func)) {   \
             LOGE("Function %s does not returned OK state ", #func); \
+            throw std::runtime_error("check return macro gives false value");  \
         }               \
     } while(0);
 

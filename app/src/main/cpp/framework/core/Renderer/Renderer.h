@@ -10,18 +10,6 @@
 #include <GLES3/gl3.h>
 #include <android/native_window.h>
 
-const EGLint attrib_list_[] =  {
-        EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
-        EGL_RED_SIZE, 8,
-        EGL_GREEN_SIZE, 8,
-        EGL_BLUE_SIZE, 8,
-        EGL_ALPHA_SIZE, 8,
-        EGL_DEPTH_SIZE, 16,
-        EGL_STENCIL_SIZE, 8,
-        EGL_NONE
-};
-
 namespace nativecpp {
     /// This class will handle the rendering of everything in this app
     class Renderer {
@@ -36,18 +24,10 @@ namespace nativecpp {
             static EGLRenderer instance;
             return instance;
         }
-        void SetWindowSurface(ANativeWindow* window);
-        void CreateContext();
-        bool MakeContextCurrent();
-        EGLRenderer();
+        bool InitializeWindow(ANativeWindow* window);
         ~EGLRenderer() override {}
         void Initialize();
     private:
-        EGLNativeWindowType window_ = nullptr;
-        EGLDisplay display_;
-        EGLConfig config_;
-        EGLSurface surface_;
-        EGLContext context_;
     };
 
 } // namespace
