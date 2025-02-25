@@ -8,6 +8,7 @@
 #include "string.h"
 #include <stdexcept>
 #include <EGL/egl.h>
+#include <string>
 
 
 /// Cases for EGL logging. Currently only known errors are added.
@@ -35,8 +36,13 @@ const char* EglErrorString(EGLint error) {
     do {                    \
         EGLint egl_error = eglGetError();    \
         if(!(func)) {   \
+            const char* error_str = EglErrorString(egl_error); \
             LOGE("EGL function %s failed with error code: 0x%x (%s)", \
-                #func, egl_error, EglErrorString(egl_error));     \
+                #func, egl_error, error_str);     \
+            throw std::runtime_error(std::string("EGL function ") + #func + \
+                                     " failed with error code: 0x" + \
+                                     std::to_string(egl_error) + " (" + \
+                                     error_str + ")"); \
         }               \
     } while(0);
 
@@ -44,7 +50,8 @@ const char* EglErrorString(EGLint error) {
     do {                \
         if(!(func)) {   \
             LOGE("Function %s does not returned OK state ", #func); \
-            throw std::runtime_error("check return macro gives false value");  \
+            throw std::runtime_error(std::string("function name ") + #func + \
+                 ")"); \
         }               \
     } while(0);
 

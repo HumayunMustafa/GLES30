@@ -33,10 +33,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         framework/core/Renderer/Renderer.cpp
 )
 
-#add_library(android_native_app_glue STATIC
-#        /Users/msd/Library/Android/sdk/ndk/25.1.8937393/sources/android/native_app_glue/android_native_app_glue.c)
-# Include headers
-include_directories(/Users/msd/Library/Android/sdk/ndk/25.1.8937393/sources/android/native_app_glue)
+
+# Include headers for native app glue
+#include_directories(/Users/msd/Library/Android/sdk/ndk/25.1.8937393/sources/android/native_app_glue)
 
 
 # Specifies libraries CMake should link to your target library. You

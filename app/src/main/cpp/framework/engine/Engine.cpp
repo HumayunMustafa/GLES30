@@ -8,10 +8,7 @@ Engine::Engine() {
 }
 
 void Engine::InitializeWindow(ANativeWindow *native_window) {
-    bool status = egl_renderer_.InitializeWindow(native_window);
-    if(status == false) {
-        throw std::runtime_error("window not initialized...");
-    }
+    CHECK_RET(egl_renderer_.InitializeWindow(native_window));
 }
 
 void Engine::DrawFrame() {
