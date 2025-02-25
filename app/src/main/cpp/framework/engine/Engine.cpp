@@ -4,11 +4,11 @@
 #include "Engine.h"
 
 Engine::Engine() {
-
+    egl_renderer_.InitializeEGL();
 }
 
-void Engine::InitializeWindow(ANativeWindow *native_window) {
-    CHECK_RET(egl_renderer_.InitializeWindow(native_window));
+void Engine::CreateWindow(ANativeWindow *native_window) {
+    egl_renderer_.CreateWindow(native_window);
 }
 
 void Engine::DrawFrame() {

@@ -40,14 +40,14 @@ class MainActivity : AppCompatActivity() {
         // Initialize SurfaceView
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
-//                JNIBridge.initScreenNative(holder.surface)
-                isSurfaceReady = true
-                Log.d("SurfaceHolder", "surfaceCreated")
-                // If there's a pending image URI, display it now
-                pendingImageUri?.let {
-                    displayImageOnSurfaceView(it)
-                    pendingImageUri = null
-                }
+                JNIBridge.initScreenNative(holder.surface)
+//                isSurfaceReady = true
+//                Log.d("SurfaceHolder", "surfaceCreated")
+//                // If there's a pending image URI, display it now
+//                pendingImageUri?.let {
+//                    displayImageOnSurfaceView(it)
+//                    pendingImageUri = null
+//                }
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {

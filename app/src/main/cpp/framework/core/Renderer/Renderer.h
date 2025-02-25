@@ -24,11 +24,18 @@ namespace nativecpp {
             static EGLRenderer instance;
             return instance;
         }
-        bool InitializeWindow(ANativeWindow* window);
+        bool InitializeEGL();
+        void CreateWindow(ANativeWindow* window);
+        void CreateContext();
+        void MakeContextCurrent();
         void DrawFrame();
         ~EGLRenderer() override {}
-        void Initialize();
     private:
+        EGLNativeWindowType window_;
+        EGLDisplay display_;
+        EGLSurface surface_;
+        EGLConfig config_;
+        EGLContext context_;
     };
 
 } // namespace

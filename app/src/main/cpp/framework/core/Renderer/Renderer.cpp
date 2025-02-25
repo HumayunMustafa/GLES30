@@ -9,8 +9,7 @@ namespace nativecpp {
 
     /// The below function is written using reference from book
     /// OpenGL ES 3.0: Programming Guide
-    bool EGLRenderer::InitializeWindow(ANativeWindow *window) {
-        EGLNativeWindowType n_window = window;
+    bool EGLRenderer::InitializeEGL() {
         const EGLint config_attrib[] = {
                 EGL_RENDERABLE_TYPE, EGL_WINDOW_BIT,
                 EGL_RED_SIZE, 8,
@@ -23,28 +22,39 @@ namespace nativecpp {
                 EGL_CONTEXT_CLIENT_VERSION, 3,
                 EGL_NONE
         };
-        EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        if(display == EGL_NO_DISPLAY) {
+        display_ = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        if(display_ == EGL_NO_DISPLAY) {
             return EGL_FALSE;
         }
         EGLint major, minor;
-        CHECK_RET_EGL(eglInitialize(display, &major, &minor));
-        EGLConfig config;
+        CHECK_RET_EGL(eglInitialize(display_, &major, &minor));
         EGLint  num_configs;
-        CHECK_RET_EGL(eglChooseConfig(display,config_attrib,&config, 1, &num_configs));
-        EGLSurface surface = eglCreateWindowSurface(display, config, n_window, NULL);
-        if(surface == EGL_NO_SURFACE) {
-            return EGL_FALSE;
-        }
-        EGLContext context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attrib);
-        if(context == EGL_NO_CONTEXT) {
-            return EGL_FALSE;
-        }
-        CHECK_RET_EGL(eglMakeCurrent(display, window, window, context));
+        CHECK_RET_EGL(eglChooseConfig(display_,config_attrib,&config_, 1, &num_configs));
         return EGL_TRUE;
     }
 
     void EGLRenderer::DrawFrame() {
+    }
+
+    void EGLRenderer::CreateWindow(ANativeWindow *window) {
+        window_ = window;
+        surface_ = eglCreateWindowSurface(display_, config_, window_, NULL);
+        CHECK_RET_EGL(surface_);
+    }
+
+    void EGLRenderer::CreateContext() {
+        const EGLint attribList[] =
+                {
+                        // EGL_KHR_create_context is required
+                        EGL_CONTEXT_CLIENT_VERSION, 3,
+                        EGL_NONE
+                };
+        context_ = eglCreateContext(display_, config_, EGL_NO_CONTEXT, attribList);
+        CHECK_RET_EGL(context_);
+    }
+
+    void EGLRenderer::MakeContextCurrent() {
+        CHECK_RET_EGL(eglMakeCurrent(display_,surface_,surface_,context_));
     }
 
 } // namespace

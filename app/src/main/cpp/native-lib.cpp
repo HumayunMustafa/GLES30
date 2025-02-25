@@ -23,8 +23,8 @@ Java_com_example_videogles_MainActivity_stringFromJNI(
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_videogles_JNIBridge_initScreenNative(JNIEnv *env, jclass clazz, jobject surface) {
-    if(surface != 0) {
+    if(surface) {
         native_window_ptr = ANativeWindow_fromSurface(env, surface);
-        engine->InitializeWindow(native_window_ptr);
+        engine->CreateWindow(native_window_ptr);
     }
 }

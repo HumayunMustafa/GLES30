@@ -13,7 +13,7 @@
 class Engine {
 public:
     Engine();
-    void InitializeWindow(ANativeWindow* native_window);
+    void CreateWindow(ANativeWindow* native_window);
     void DrawFrame();
 private:
     nativecpp::EGLRenderer egl_renderer_;
